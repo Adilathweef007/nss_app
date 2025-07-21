@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.google.gms:google-services:4.3.15' // Google Services plugin
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Set new build directory location
+def newBuildDir = rootProject.layout.buildDirectory.dir("../../build").get().asFile
+rootProject.layout.buildDirectory.set(newBuildDir)
+
+subprojects {
+    def newSubprojectBuildDir = new File(newBuildDir, project.name)
+    project.layout.buildDirectory.set(newSubprojectBuildDir)
+}
+
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
+}
